@@ -1,0 +1,30 @@
+name: 'Financial Tracker & Agent'
+description: 'Track ETFs, Stocks, and Crypto with modular alerts'
+author: 'srdex'
+inputs:
+  tickers:
+    description: 'Comma-separated list of tickers (e.g. IVV, BTC-USD)'
+    required: false
+    default: 'IVV,VGT,SCHD,VHT,ITA,VFH,BTC-USD,ETH-USD'
+  enable_readme:
+    description: 'Update README.md with the latest stats'
+    required: false
+    default: 'true'
+  enable_telegram:
+    description: 'Send alerts to Telegram'
+    required: false
+    default: 'false'
+  enable_email:
+    description: 'Send report via Email'
+    required: false
+    default: 'false'
+  telegram_token:
+    description: 'Telegram Bot Token'
+    required: false
+  telegram_chat_id:
+    description: 'Telegram Chat ID'
+    required: false
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
