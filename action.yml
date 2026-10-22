@@ -6,6 +6,10 @@ inputs:
     description: 'Comma-separated list of tickers (e.g. IVV, BTC-USD)'
     required: false
     default: 'IVV,VGT,SCHD,VHT,ITA,VFH,BTC-USD,ETH-USD'
+  database_path:
+    description: 'Path to the SQLite database, relative to the GitHub workspace or absolute'
+    required: false
+    default: 'data/prices.sqlite'
   enable_readme:
     description: 'Update README.md with the latest stats'
     required: false

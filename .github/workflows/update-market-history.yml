@@ -1,0 +1,52 @@
+name: Update market history
+
+on:
+  schedule:
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: financial-alert-market-history
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find latest unexpired database artifact
+        id: previous
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=financial-alert-history&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | last | .workflow_run.id // empty')
+          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore database artifact
+        if: steps.previous.outputs.run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: financial-alert-history
+          path: data
+          run-id: ${{ steps.previous.outputs.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Update SQLite history
+        uses: ./
+        with:
+          database_path: data/prices.sqlite
+
+      - name: Save database artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: financial-alert-history
+          path: data/prices.sqlite
+          if-no-files-found: error
+          retention-days: 7

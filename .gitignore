@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+data/prices.sqlite
+data/prices.sqlite-shm
+data/prices.sqlite-wal
